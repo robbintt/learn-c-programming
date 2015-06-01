@@ -1,4 +1,10 @@
 
+### The slideshow that got me started here:
+https://news.ycombinator.com/item?id=9635230
+
+### comp.lang.c guide:
+http://www.c-faq.com/
+
 
 (C Standard Library)[http://en.wikipedia.org/wiki/C_standard_library]
 (C POSIX Library)[http://en.wikipedia.org/wiki/C_POSIX_library]
