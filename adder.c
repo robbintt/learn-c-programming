@@ -1,5 +1,10 @@
 #include <stdio.h>
 
+/*
+ * A simple adder with a few interesting details.
+ * / <--(note the space between * / means this line is still a comment.
+ * This sequence ends a multiline comment -> */  
+
 int main() {
     int i = 1;
     i = add_one(i);
