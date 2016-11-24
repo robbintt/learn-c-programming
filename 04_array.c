@@ -1,13 +1,9 @@
 #include <stdio.h>
 
 /*
- * There are some interesting questions here. 
  *
- * Why is the memory address in the for loop unchanged?
- *
- * In C, the operator is defined like so:
+ * Lets demonstrate [] operator syntactic sugar
  * e1[e2] means *(e1+e2)
- *
  *
  */
 
@@ -20,7 +16,11 @@ int add_one(int input) {
 
 int main() {
   int len = 10;
+  
+  // choose one of the two following declarations
+  // int *(array+len)
   int array[len];
+
   for(int i=0; i<len; i++) {
     int result = add_one(i);
     array[i] = result;
