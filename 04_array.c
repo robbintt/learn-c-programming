@@ -5,26 +5,11 @@
  *
  * Why is the memory address in the for loop unchanged?
  *
+ * In C, the operator is defined like so:
+ * e1[e2] means *(e1+e2)
  *
  *
  */
-
-int main() {
-  int i;
-  int array[5];
-  int *array_ptr = array;
-  printf("Value of i: %d\n", array[0]);
-  printf("Memory Address: %p\n", array_ptr);
-  /*
-  for(i=0; i<10; i++) {
-    int result = add_one(i);
-    int *result_pointer = &result;
-    printf("Value of i: %d\n", result);
-    printf("Memory Address: %p\n", result_pointer);
-  }
-  */
-  return 0;
-}
 
 int add_one(int input) {
   // Must have the ++ before the variable name or else it adds after setting
@@ -32,3 +17,16 @@ int add_one(int input) {
   int result = input+1;    
   return result;
 }
+
+int main() {
+  int len = 10;
+  int array[len];
+  for(int i=0; i<len; i++) {
+    int result = add_one(i);
+    array[i] = result;
+    printf("Value of i: %d\n", array[i]);
+    printf("Memory Address: %p\n", &array[i]);
+  }
+  return 0;
+}
+
