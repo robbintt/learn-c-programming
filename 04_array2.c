@@ -2,27 +2,16 @@
 
 /*
  *
- * Lets demonstrate [] operator syntactic sugar
- * e1[e2] means *(e1+e2)
+ * Lets demonstrate populating an array with curly braces { .. }
  *
  */
-
-int add_one(int input) {
-  int result = input+1;    
-  return result;
-}
 
 int main() {
 
   int len = 10;
-  int array[len];
+  int array[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
   for(int i=0; i<len; i++) {
-    int result = add_one(i);
-
-    // two options for how to access array:
-    // array[i] = result;
-    *(array + i) = result;
 
     printf("Array location: %p\n", array);
     printf("Array dereference: %d\n", *array);
