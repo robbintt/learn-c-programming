@@ -1,6 +1,6 @@
 CFLAGS=-Wall -g
 
-all: ex1 ex3 ex7
+all: ex1 ex3 ex7 ex7_charxint
 
 clean:
 	rm -f ex1
