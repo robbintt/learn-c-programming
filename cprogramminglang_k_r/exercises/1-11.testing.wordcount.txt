@@ -1,0 +1,17 @@
+
+### How would you test the word count program? What kind of input are most likely to uncover bugs if there are any?
+
+
+A. Testing -
+    - short input (nothing)
+    - long input (larger than memory?)
+    - definition of 'word' (punctuation is part of a word right now)
+
+
+B. Bugs
+    - Really long input would probably create memory issues?
+    - Systems with different newlines
+
+C. Not bugs? Needs tests!
+    - Non letter ascii symbols probably will be ok, system bell?
+    - getchar() limitations?
