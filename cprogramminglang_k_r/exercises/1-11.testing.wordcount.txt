@@ -3,6 +3,8 @@
 
 
 A. Testing -
+    - How would you test it?
+        - The program takes standard input, so just supply files with your test strings
     - short input (nothing)
     - long input (larger than memory?)
     - definition of 'word' (punctuation is part of a word right now)
