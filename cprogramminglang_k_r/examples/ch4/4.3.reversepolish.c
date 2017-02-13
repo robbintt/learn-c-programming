@@ -1,3 +1,15 @@
+/* The reverse polish calculator is p. 73-79 and 
+ * is our first example of a program that could
+ * be broken into multiple files. However, it is
+ * first expressed as one file with multiple 
+ * parts.
+ * 
+ * This program is used in a number of exercises.
+ *
+ */
+
+
+/* PART 1, calculator main() controller loop */
 #include <stdio.h>
 #include <stdlib.h> /* for atof() */
 
@@ -47,6 +59,8 @@ int main()
   return 0;
 }
 
+
+/* PART 2, push, pop */
 #define MAXVAL 100
 
 int sp = 0;
@@ -72,6 +86,7 @@ double pop(void)
   }
 }
 
+/* PART 3, getop */
 #include <ctype.h>
 
 int getch(void);
@@ -100,6 +115,8 @@ int getop(char s[])
     return NUMBER;
 }    
 
+
+/* PART 4, getch, ungetch */
 
 # define BUFSIZE 100
 
