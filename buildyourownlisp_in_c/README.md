@@ -10,6 +10,8 @@ The author explicity states that some wouldn't even consider it a lisp because i
 1. Type in the hello world code
 2. Compile with: `cc -std=c99 -Wall hello_world.c -o hello_world`
 
+More detail about: [puts](http://en.cppreference.com/w/c/io/puts)
+
 Learn to use `gdb` to debug your programs early. It's the right way to debug.
 
 #### gdb (or) Gnu's GDB Debugger
