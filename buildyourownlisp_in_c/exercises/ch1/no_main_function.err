@@ -1,0 +1,28 @@
+compile command: 
+================
+cc -std=c99 -Wall hello_world.c -o hello_world -v &> no_main_function.err
+
+output from stderr:
+===================
+
+Apple LLVM version 8.0.0 (clang-800.0.42.1)
+Target: x86_64-apple-darwin16.4.0
+Thread model: posix
+InstalledDir: /Library/Developer/CommandLineTools/usr/bin
+ "/Library/Developer/CommandLineTools/usr/bin/clang" -cc1 -triple x86_64-apple-macosx10.12.0 -Wdeprecated-objc-isa-usage -Werror=deprecated-objc-isa-usage -emit-obj -mrelax-all -disable-free -disable-llvm-verifier -discard-value-names -main-file-name hello_world.c -mrelocation-model pic -pic-level 2 -mthread-model posix -mdisable-fp-elim -masm-verbose -munwind-tables -target-cpu penryn -target-linker-version 274.2 -v -dwarf-column-info -debugger-tuning=lldb -resource-dir /Library/Developer/CommandLineTools/usr/bin/../lib/clang/8.0.0 -Wall -std=c99 -fdebug-compilation-dir /Users/robbintt/monolith/c_scaffolding/buildyourownlisp_in_c -ferror-limit 19 -fmessage-length 0 -stack-protector 1 -fblocks -fobjc-runtime=macosx-10.12.0 -fencode-extended-block-signature -fmax-type-align=16 -fdiagnostics-show-option -o /var/folders/gb/0dcg4vy12zx8bg8wms_8p7_m0000gn/T/hello_world-2b75a9.o -x c hello_world.c
+clang -cc1 version 8.0.0 (clang-800.0.42.1) default target x86_64-apple-darwin16.4.0
+#include "..." search starts here:
+#include <...> search starts here:
+ /usr/local/include
+ /Library/Developer/CommandLineTools/usr/bin/../lib/clang/8.0.0/include
+ /Library/Developer/CommandLineTools/usr/include
+ /usr/include
+ /System/Library/Frameworks (framework directory)
+ /Library/Frameworks (framework directory)
+End of search list.
+ "/Library/Developer/CommandLineTools/usr/bin/ld" -demangle -dynamic -arch x86_64 -macosx_version_min 10.12.0 -o hello_world /var/folders/gb/0dcg4vy12zx8bg8wms_8p7_m0000gn/T/hello_world-2b75a9.o -lSystem /Library/Developer/CommandLineTools/usr/bin/../lib/clang/8.0.0/lib/darwin/libclang_rt.osx.a
+Undefined symbols for architecture x86_64:
+  "_main", referenced from:
+     implicit entry/start for main executable
+ld: symbol(s) not found for architecture x86_64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
