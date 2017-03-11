@@ -88,5 +88,15 @@ int main() {
   /* there's an easier way because this is so common */
   printf("origin is (%d,%d)\n", pp->x, pp->y);
 
+  // k&r declares
+  // struct rect r, *rp = r;
+  // compiler recommends
+  struct rect r, *rp = &r;
+  // found in this errata online too: https://gist.github.com/ttilley/1159475
+
+  // equivalent expressions
+  printf("%s\n", (r.pt1.x == rp->pt1.x == (r.pt1).x == (rp->pt1).x) ? "equivalent" : "not equivalent");
+   
+
 }
 
