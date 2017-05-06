@@ -41,6 +41,7 @@ struct nlist *lookup(char *s)
 }
 
 // this function really goes in a library included in this program
+// you can use the strdup function in the stdlib, i think it is in string.h
 char *kr_strdup(char *s) /* make a duplicate of s */
 {
   char *p;
@@ -53,7 +54,10 @@ char *kr_strdup(char *s) /* make a duplicate of s */
 
 
 struct nlist *lookup(char *);
-char *kr_strdup(char *); /* this is either a semicolon or it's part of the definition on 143 and needed a ... */
+
+/* this is either a semicolon or it's part of the definition on 143 and needed a ... */
+/* my belief is that the line shouldn't exist at all on this page */
+/* char *kr_strdup(char *); */
 
 /* install: put (name, defn) in hashtab */
 struct nlist *install(char *name, char *defn)
@@ -79,6 +83,7 @@ int main()
 {
   
   install("hello", "world");
+  install("hello", "party");
   printf("%s", lookup("hello")->defn);
 
 }
