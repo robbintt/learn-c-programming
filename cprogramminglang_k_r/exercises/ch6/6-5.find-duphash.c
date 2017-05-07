@@ -166,15 +166,18 @@ char *char2str(const char c)
 
 
 // test the test string against the target
-int testhashes(const char *s, const char *target)
+int testhashes(char *s, char *target)
 {
     unsigned hashs, hasht;
     hashs = hash(s);
     hasht = hash(target);
     if (hashs == hasht)
+    {
       printf("attempt: %s matches target: %s\n", s, target);
+      install(s, target);
+    }
     else
-      ;//printf("attempt: %s doesn't match target: %s\n", s, target);
+      ; //printf("attempt: %s doesn't match target: %s\n", s, target);
 
     // return a match or array of structs of matches or something
     // it needs to return an arbitrary number of matches though
@@ -185,9 +188,7 @@ int testhashes(const char *s, const char *target)
 /* construct strings in this ascii range */
 #define CHARTABLE_SIZE 95 /* highest character is 32+(95-1) */
 #define CHARTABLE_OFFSET 32 /* used ascii character offset */
-#define CHARTABLE_MAX 50 /* max test string size */
-static int chartable[CHARTABLE_SIZE]; /* point to this to reserve location when brute forcing strings */
-
+static int chartable[CHARTABLE_SIZE]; /* table of possible characters */
 
 int build_and_test_hash(char target[], char s[], int depth, int *chartable)
 {
@@ -213,62 +214,12 @@ int build_and_test_hash(char target[], char s[], int depth, int *chartable)
 int findhashdup(char target[], char prefix[], int max) 
 {
 
-  if (max > CHARTABLE_MAX)
-    max = CHARTABLE_MAX;
-
-  // build a table of characters to point into
+  // build a table of characters
   for (int c = 0; c < CHARTABLE_SIZE; c++)
     chartable[c] = c + CHARTABLE_OFFSET;
 
-  /*
-  // an array of pointers into chartable[]
-  int *chartableptr[CHARTABLE_MAX] = { &chartable[0] };
-  */
-
-  // recursive hash tester
+  // recursively test each hash
   build_and_test_hash(target, prefix, --max, chartable);
-
-  /*
-  // test progressively longer substrings
-  // each pointer can represent a location on the final
-  // string, and they can all be incremented and reset
-  for (int testsize = 0; testsize < max; testsize++)
-  {
-    for (int i = 0; i<CHARTABLE_SIZE; i++)
-    {
-      for (int j = 0; j<CHARTABLE_SIZE; j++)
-      {
-        // convert the test char to a string
-        char *t1 = char2str(chartable[i]);
-        char *t2 = char2str(chartable[j]);
-        // build the test string
-        char *s = prefix;
-        s = concat(s, t1);
-        s = concat(s, t2);
-
-        // test the test string against the target
-        testhashes(s, target);
-        free(s); // deallocate the string
-      }
-    }
-  }
-  */
-
-
-  /*
-  for (char c='0'; c <= 'z'; c++) {
-
-    // convert the test char to a string
-    char *test_str = char2str(c);
-    // build the test string
-    char *s = concat(prefix, test_str);
-
-    // test the test string against the target
-    testhashes(s, target)
-
-    free(s); // deallocate the string
-  }
-  */
 
   return 0;
 }
@@ -285,5 +236,11 @@ int main()
   install("hello", "tennis");
   printf("lookup result: %s\n", lookup("hello")->defn);
 
-  findhashdup("test", "", 4);
+  // this is currently installing all colliding hashes in this depth
+  // then we can selectively undef and test if undef is working
+  // we can also finally test the lookup on deeper elements
+  findhashdup("hello", "", 2);
+  printf("lookup result: %s\n", lookup("oo")->defn);
+  //undef("oo");
+  //printf("lookup result: %s\n", lookup("oo")->defn);
 }
