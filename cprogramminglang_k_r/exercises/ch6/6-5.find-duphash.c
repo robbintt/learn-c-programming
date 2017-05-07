@@ -153,17 +153,38 @@ char *concat(const char *s1, const char *s2)
 }
 
 
+char *char2str(const char c)
+{
+  char *mystr = malloc(2);
+  mystr[0] = c;
+  mystr[1] = '\0';
+
+  return(mystr);
+}
+
+
 /* brute force a duplicate hash for a particular string */
-int findhashdup(char name[]) {
+/* accepts an empty string or a prefix */
+/* build suffixes up over time by repeatedly appending */
+int findhashdup(char target[], char prefix[]) {
 
   for (char c='0'; c <= 'z'; c++) {
 
-    char test_str[2];
-    test_str[0] = c;
-    test_str[1] = '\0';
+    // convert the test char to a string
+    char *test_str = char2str(c);
 
-    char *s = concat(name, test_str);
-    printf("%s\n", s);
+    // build the test string from the prefix and test str
+    char *s = concat(prefix, test_str);
+
+    unsigned hashs, hasht;
+    hashs = hash(s);
+    hasht = hash(target);
+    // test the target against the full test string
+    if (hashs == hasht)
+      printf("attempt: %s matches target: %s\n", s, target);
+    else
+      printf("attempt: %i doesn't match target: %i\n", hashs, hasht);
+
     free(s); // deallocate the string
   }
 
@@ -185,5 +206,5 @@ int main()
   printf("'a': %s, 'hash(a)': %i\n", "a", hash("a"));
   printf("'aa': %s, 'hash(aa)': %i\n", "aaaa", hash("aaaa"));
 
-  findhashdup("test");
+  findhashdup("test", "");
 }
