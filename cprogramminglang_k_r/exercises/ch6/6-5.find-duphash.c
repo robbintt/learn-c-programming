@@ -163,27 +163,45 @@ char *char2str(const char c)
 }
 
 
+// test the test string against the target
+void testhashes(const char *s, const char *target)
+{
+    unsigned hashs, hasht;
+    hashs = hash(s);
+    hasht = hash(target);
+    if (hashs == hasht)
+      printf("attempt: %s matches target: %s\n", s, target);
+    else
+      printf("attempt: %i doesn't match target: %i\n", hashs, hasht);
+
+    return NULL;
+}
+
+/* I can use ascii values 32-126 for characters for now
+ * this simplifies the construction of test strings, as 
+ * I can modulo them the distance [0-94] inclusive and add 32.
+ */
+
 /* brute force a duplicate hash for a particular string */
 /* accepts an empty string or a prefix */
 /* build suffixes up over time by repeatedly appending */
-int findhashdup(char target[], char prefix[]) {
+/* 'max' is the maximum number of letters to append onto 'prefix' */
+int findhashdup(char target[], char prefix[], int max) {
+
+  // test progressively longer substrings
+  for (int testsize = 1; testsize <= max; testsize++)
+  {
 
   for (char c='0'; c <= 'z'; c++) {
 
     // convert the test char to a string
     char *test_str = char2str(c);
 
-    // build the test string from the prefix and test str
+    // build the test string
     char *s = concat(prefix, test_str);
 
-    unsigned hashs, hasht;
-    hashs = hash(s);
-    hasht = hash(target);
-    // test the target against the full test string
-    if (hashs == hasht)
-      printf("attempt: %s matches target: %s\n", s, target);
-    else
-      printf("attempt: %i doesn't match target: %i\n", hashs, hasht);
+    // test the test string against the target
+    testhashes(s, target)
 
     free(s); // deallocate the string
   }
@@ -206,5 +224,5 @@ int main()
   printf("'a': %s, 'hash(a)': %i\n", "a", hash("a"));
   printf("'aa': %s, 'hash(aa)': %i\n", "aaaa", hash("aaaa"));
 
-  findhashdup("test", "");
+  findhashdup("test", "", 1);
 }
