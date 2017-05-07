@@ -125,19 +125,13 @@ struct nlist *undef(char *s)
     if (strcmp(s, np.name) == 0) {
       // assumes that np.next is null initialized
       if (np.next != NULL) {
-        printf("this should usually not happen.\n");
-        // we can just copy np.next onto np, then free the struct at np.next
-        // this sidesteps changing the reference to another struct in the hashtab array
-        // i don't think these are sticking... refer to the install function
-        np.next = np.next->next;
-        np.name = np.next->name;
-        np.defn = np.next->defn;
-        // free these strings, what about the struct? where does that go?
-        //free(np.next->name);
-        //free(np.next->defn);
+        strcpy(np.defn, np.next->defn);
+        strcpy(np.name, np.next->name);
+        // this overwrites the actual pointer with the other pointer
+        *np.next = *np.next->next;
+        // don't I need to free() the struct that disappeared?
       }
       else {
-        printf("This usually should happen.\n");
         // if at the top level, reset the hashtable index to null 
         // no need to free the struct in this array
         if (RESET_HASHTABLE == 1) {
@@ -256,7 +250,7 @@ int main()
   findhashdup("hello", "", 2);
   printf("lookup result: %s\n", lookup("oo")->defn);
   undef("oo");
-  printf("lookup result: %s:%s\n", "oo", lookup("oo")->defn);
+  lookup("oo");
   printf("lookup result: %s:%s\n", "v", lookup("v")->defn);
   printf("lookup result: %s:%s\n", "SF", lookup("SF")->defn);
 }
