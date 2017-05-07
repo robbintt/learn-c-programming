@@ -140,6 +140,7 @@ struct nlist *undef(char *s)
   return NULL;
 }
 
+
 /* from: http://stackoverflow.com/a/8465083 */
 char *concat(const char *s1, const char *s2)
 {
@@ -149,6 +150,7 @@ char *concat(const char *s1, const char *s2)
   strcpy(res, s1);
   strcat(res, s2);
 
+  // wherever this goes, it must be free()'d later.
   return(res);
 }
 
@@ -172,7 +174,7 @@ int testhashes(const char *s, const char *target)
     if (hashs == hasht)
       printf("attempt: %s matches target: %s\n", s, target);
     else
-      printf("attempt: %i doesn't match target: %i\n", hashs, hasht);
+      ;//printf("attempt: %s doesn't match target: %s\n", s, target);
 
     // return a match or array of structs of matches or something
     // it needs to return an arbitrary number of matches though
@@ -187,10 +189,29 @@ int testhashes(const char *s, const char *target)
 static int chartable[CHARTABLE_SIZE]; /* point to this to reserve location when brute forcing strings */
 
 
+int build_and_test_hash(char target[], char s[], int depth, int *chartable)
+{
+  for (int i=0; i<CHARTABLE_SIZE; i++)
+  {
+    char *t = char2str(chartable[i]);
+    char *new_s = concat(s, t);
+    if (depth > 0)
+      // tests longer strings first
+      build_and_test_hash(target, new_s, depth-1, chartable);
+
+    testhashes(new_s, target);
+    free(new_s); // deallocate the string
+  }
+
+  return 0;
+}
+
+
 /* brute force a duplicate hash for a particular string */
 /* accepts an empty string or a prefix */
 /* 'max' is the maximum number of letters to append onto 'prefix' */
-int findhashdup(char target[], char prefix[], int max) {
+int findhashdup(char target[], char prefix[], int max) 
+{
 
   if (max > CHARTABLE_MAX)
     max = CHARTABLE_MAX;
@@ -199,9 +220,15 @@ int findhashdup(char target[], char prefix[], int max) {
   for (int c = 0; c < CHARTABLE_SIZE; c++)
     chartable[c] = c + CHARTABLE_OFFSET;
 
+  /*
   // an array of pointers into chartable[]
   int *chartableptr[CHARTABLE_MAX] = { &chartable[0] };
+  */
 
+  // recursive hash tester
+  build_and_test_hash(target, prefix, --max, chartable);
+
+  /*
   // test progressively longer substrings
   // each pointer can represent a location on the final
   // string, and they can all be incremented and reset
@@ -209,15 +236,23 @@ int findhashdup(char target[], char prefix[], int max) {
   {
     for (int i = 0; i<CHARTABLE_SIZE; i++)
     {
-      // convert the test char to a string
-      char *test_str = char2str(chartable[i]);
-      // build the test string
-      char *s = concat(prefix, test_str);
-      // test the test string against the target
-      testhashes(s, target);
-      free(s); // deallocate the string
+      for (int j = 0; j<CHARTABLE_SIZE; j++)
+      {
+        // convert the test char to a string
+        char *t1 = char2str(chartable[i]);
+        char *t2 = char2str(chartable[j]);
+        // build the test string
+        char *s = prefix;
+        s = concat(s, t1);
+        s = concat(s, t2);
+
+        // test the test string against the target
+        testhashes(s, target);
+        free(s); // deallocate the string
+      }
     }
   }
+  */
 
 
   /*
@@ -250,8 +285,5 @@ int main()
   install("hello", "tennis");
   printf("lookup result: %s\n", lookup("hello")->defn);
 
-  printf("'a': %s, 'hash(a)': %i\n", "a", hash("a"));
-  printf("'aa': %s, 'hash(aa)': %i\n", "aaaa", hash("aaaa"));
-
-  findhashdup("test", "", 1);
+  findhashdup("test", "", 4);
 }
