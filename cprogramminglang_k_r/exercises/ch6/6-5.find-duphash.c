@@ -37,12 +37,18 @@ struct nlist *lookup(char *s)
 
   // standard idiom for walking along a linked list
   // for (ptr = head; ptr != NULL; ptr = ptr->next)
+  printf("lookup details:");
   for (np = hashtab[hash(s)]; np != NULL; np = np->next)
   {
-    //printf("lookup continues: %s %s\n", np->name, np->defn);
+    printf("%s, ", np->name);
     if (strcmp(s, np->name) == 0)
+    {
+      printf("\n"); // end of lookup details stdout
       return np; /* found */ 
+    }
   }
+  printf("\n"); // end of lookup details stdout
+  printf("lookup: %s not found in hash table.\n", s);
   return NULL; /* not found */
 }
 
@@ -79,7 +85,7 @@ struct nlist *install(char *name, char *defn)
     np->next = hashtab[hashval];
     hashtab[hashval] = np;
   } else { /* already there */
-    printf("Freeing old definition. (function = lookup)");
+    printf("%s->%s: freeing old definition. (function = lookup)\n", name, defn);
     free((void *) np->defn); /* free previous defn */
   }
   if ((np->defn = kr_strdup(defn)) == NULL)
@@ -110,6 +116,8 @@ struct nlist *undef(char *s)
   /* if undef occurs at the top level, reset the hash table index to NULL */
   int RESET_HASHTABLE = 1;
 
+  // previous pointer, used to hold the previous place in the do-while check 
+  void *pp;
   do {
     /* if we actually reference the hashtab then we can change it later */
     /* np is the target of 'undef' */
@@ -120,11 +128,13 @@ struct nlist *undef(char *s)
         printf("this should usually not happen.\n");
         // we can just copy np.next onto np, then free the struct at np.next
         // this sidesteps changing the reference to another struct in the hashtab array
+        // i don't think these are sticking... refer to the install function
         np.next = np.next->next;
         np.name = np.next->name;
         np.defn = np.next->defn;
-        // free struct at *np.next (do i need to dereference np.next then?
-        free(np.next);
+        // free these strings, what about the struct? where does that go?
+        //free(np.next->name);
+        //free(np.next->defn);
       }
       else {
         printf("This usually should happen.\n");
@@ -137,7 +147,9 @@ struct nlist *undef(char *s)
       break;
     }
     RESET_HASHTABLE = 0;
-  } while (np.next != NULL);
+    pp = np.next;
+    np = *np.next; // while needs to check np, not np.next
+  } while (pp != NULL);
 
   return NULL;
 }
@@ -234,7 +246,7 @@ int main()
   install("hello", "party");
   undef("hello");
   // returns error if hello does not exist...
-  //printf("lookup result: %s\n", lookup("doesnotexistever")->defn);
+  lookup("doesnotexistever");
   install("hello", "tennis");
   printf("lookup result: %s\n", lookup("hello")->defn);
 
@@ -244,5 +256,7 @@ int main()
   findhashdup("hello", "", 2);
   printf("lookup result: %s\n", lookup("oo")->defn);
   undef("oo");
-  printf("lookup result: %s\n", lookup("oo")->defn);
+  printf("lookup result: %s:%s\n", "oo", lookup("oo")->defn);
+  printf("lookup result: %s:%s\n", "v", lookup("v")->defn);
+  printf("lookup result: %s:%s\n", "SF", lookup("SF")->defn);
 }
