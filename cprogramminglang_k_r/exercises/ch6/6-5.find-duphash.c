@@ -38,8 +38,11 @@ struct nlist *lookup(char *s)
   // standard idiom for walking along a linked list
   // for (ptr = head; ptr != NULL; ptr = ptr->next)
   for (np = hashtab[hash(s)]; np != NULL; np = np->next)
+  {
+    //printf("lookup continues: %s %s\n", np->name, np->defn);
     if (strcmp(s, np->name) == 0)
       return np; /* found */ 
+  }
   return NULL; /* not found */
 }
 
@@ -110,9 +113,8 @@ struct nlist *undef(char *s)
   do {
     /* if we actually reference the hashtab then we can change it later */
     /* np is the target of 'undef' */
+    printf("Traversing: %s %s\n", np.name, np.defn);
     if (strcmp(s, np.name) == 0) {
-      printf("%s\n", np.name);
-      printf("%s\n", np.defn);
       // assumes that np.next is null initialized
       if (np.next != NULL) {
         printf("this should usually not happen.\n");
@@ -241,6 +243,6 @@ int main()
   // we can also finally test the lookup on deeper elements
   findhashdup("hello", "", 2);
   printf("lookup result: %s\n", lookup("oo")->defn);
-  //undef("oo");
-  //printf("lookup result: %s\n", lookup("oo")->defn);
+  undef("oo");
+  printf("lookup result: %s\n", lookup("oo")->defn);
 }
