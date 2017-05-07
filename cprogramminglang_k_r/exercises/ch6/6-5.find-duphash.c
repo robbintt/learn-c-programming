@@ -173,8 +173,7 @@ char *char2str(const char c)
 }
 
 
-// test the test string against the target
-int testhashes(char *s, char *target)
+int test_a_hash(char *s, char *target)
 {
     unsigned hashs, hasht;
     hashs = hash(s);
@@ -208,7 +207,7 @@ int build_and_test_hash(char target[], char s[], int depth, int *char_table)
       // tests longer strings first
       build_and_test_hash(target, new_s, depth-1, char_table);
 
-    testhashes(new_s, target);
+    test_a_hash(new_s, target);
     free(new_s); // deallocate the string
   }
 
@@ -219,7 +218,7 @@ int build_and_test_hash(char target[], char s[], int depth, int *char_table)
 /* brute force a duplicate hash for a particular string */
 /* accepts an empty string or a prefix */
 /* 'max' is the maximum number of letters to append onto 'prefix' */
-int findhashdup(char target[], char prefix[], int max) 
+int find_hash_dupes(char target[], char prefix[], int max) 
 {
 
   // build a table of characters
@@ -247,7 +246,7 @@ int main()
   // this is currently installing all colliding hashes in this depth
   // then we can selectively undef and test if undef is working
   // we can also finally test the lookup on deeper elements
-  findhashdup("hello", "", 2);
+  find_hash_dupes("hello", "", 2);
   printf("lookup result: %s\n", lookup("oo")->defn);
   undef("oo");
   lookup("oo");
