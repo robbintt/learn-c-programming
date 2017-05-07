@@ -194,19 +194,19 @@ int testhashes(char *s, char *target)
 }
 
 /* construct strings in this ascii range */
-#define CHARTABLE_SIZE 95 /* highest character is 32+(95-1) */
-#define CHARTABLE_OFFSET 32 /* used ascii character offset */
-static int chartable[CHARTABLE_SIZE]; /* table of possible characters */
+#define CHAR_TABLE_SIZE 95 /* highest character is 32+(95-1) */
+#define CHAR_TABLE_OFFSET 32 /* used ascii character offset */
+static int char_table[CHAR_TABLE_SIZE]; /* table of possible characters */
 
-int build_and_test_hash(char target[], char s[], int depth, int *chartable)
+int build_and_test_hash(char target[], char s[], int depth, int *char_table)
 {
-  for (int i=0; i<CHARTABLE_SIZE; i++)
+  for (int i=0; i<CHAR_TABLE_SIZE; i++)
   {
-    char *t = char2str(chartable[i]);
+    char *t = char2str(char_table[i]);
     char *new_s = concat(s, t);
     if (depth > 0)
       // tests longer strings first
-      build_and_test_hash(target, new_s, depth-1, chartable);
+      build_and_test_hash(target, new_s, depth-1, char_table);
 
     testhashes(new_s, target);
     free(new_s); // deallocate the string
@@ -223,11 +223,11 @@ int findhashdup(char target[], char prefix[], int max)
 {
 
   // build a table of characters
-  for (int c = 0; c < CHARTABLE_SIZE; c++)
-    chartable[c] = c + CHARTABLE_OFFSET;
+  for (int c = 0; c < CHAR_TABLE_SIZE; c++)
+    char_table[c] = c + CHAR_TABLE_OFFSET;
 
   // recursively test each hash
-  build_and_test_hash(target, prefix, --max, chartable);
+  build_and_test_hash(target, prefix, max-1, char_table);
 
   return 0;
 }
