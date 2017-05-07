@@ -10,16 +10,17 @@
 /* used from ctype: toascii */
 
 
-
 struct nlist {   /* table entry: */
   struct nlist *next;  /* next entry in chain */
   char *name; /* defined name */
   char *defn; /* replacement text */
 };
 
+
 #define HASHSIZE 101
 
 static struct nlist *hashtab[HASHSIZE]; /* pointer table */
+
 
 /* hash: form hash value for string s */
 unsigned hash(char *s)
@@ -30,12 +31,13 @@ unsigned hash(char *s)
   return hashval % HASHSIZE;
 }
 
+
 /* lookup: look for s in hashtab */
 struct nlist *lookup(char *s)
 {
   struct nlist *np;
 
-  // standard idiom for walking along a linked list
+  // IMPORTANT: standard idiom for walking along a linked list ***
   // for (ptr = head; ptr != NULL; ptr = ptr->next)
   printf("lookup details:");
   for (np = hashtab[hash(s)]; np != NULL; np = np->next)
@@ -52,6 +54,7 @@ struct nlist *lookup(char *s)
   return NULL; /* not found */
 }
 
+
 // this function really goes in a library included in this program
 // you can use the strdup function in the stdlib, i think it is in string.h
 char *kr_strdup(char *s) /* make a duplicate of s */
@@ -64,14 +67,8 @@ char *kr_strdup(char *s) /* make a duplicate of s */
   return p;
 }
 
-/* i don't think this should exist here either.... it is the first line of the lookup function definition */
-struct nlist *lookup(char *);
 
-/* this is either a semicolon or it's part of the definition on p 143 and needed a ... */
-/* my belief is that the line shouldn't exist at all on p 143 */
-/* char *kr_strdup(char *); */
-
-/* install: put (name, defn) in hashtab */
+/* install: put (name, defn) in hash table */
 struct nlist *install(char *name, char *defn)
 {
   struct nlist *np;
@@ -93,14 +90,14 @@ struct nlist *install(char *name, char *defn)
   return np;
 }
 
-/* write a function 'undef' that will remove a name and definition from the table
- * maintained by 'lookup' and 'install' */
+
+/* write a function 'undef' that will remove a name and definition from the hash table */
 /* HOW: 
  * we need to remove the reference to that struct.
  * we must replace the 'next' reference from the previous nlist with the deleted nlist's 'next' pointer
  * OR replace the 'next' reference with NULL if the current nlist's 'next' is NULL
  * This implies we need a reference back to the deleted nlist's parent's 'next'
- * do we need to unallocate the struct? 
+ * do we need to unallocate the struct or its contents? 
  * Also, the pointer that is altered is quite possibly in hashtab, rather than an nlist struct's 'next' pointer
  * */
 /* pull traversal logic from lookup */
@@ -132,8 +129,8 @@ struct nlist *undef(char *s)
         // don't I need to free() the struct that disappeared?
       }
       else {
+        // don't I need to free() the struct that disappeared?
         // if at the top level, reset the hashtable index to null 
-        // no need to free the struct in this array
         if (RESET_HASHTABLE == 1) {
           hashtab[hashval] = NULL;
         }
@@ -186,16 +183,17 @@ int test_a_hash(char *s, char *target)
     else
       ; //printf("attempt: %s doesn't match target: %s\n", s, target);
 
-    // return a match or array of structs of matches or something
-    // it needs to return an arbitrary number of matches though
-    // probably a linked list?
     return 0;
 }
 
-/* construct strings in this ascii range */
+
+/* construct all strings length<=depth in this ascii range */
 #define CHAR_TABLE_SIZE 95 /* highest character is 32+(95-1) */
 #define CHAR_TABLE_OFFSET 32 /* used ascii character offset */
+
+
 static int char_table[CHAR_TABLE_SIZE]; /* table of possible characters */
+
 
 int build_and_test_hash(char target[], char s[], int depth, int *char_table)
 {
@@ -215,11 +213,12 @@ int build_and_test_hash(char target[], char s[], int depth, int *char_table)
 }
 
 
-/* brute force a duplicate hash for a particular string */
-/* accepts an empty string or a prefix */
-/* 'max' is the maximum number of letters to append onto 'prefix' */
+/* brute force hash collisions for a particular string */
 int find_hash_dupes(char target[], char prefix[], int max) 
 {
+  /* 'max' is the maximum number of letters to append 
+   * accepts an empty string or a prefix
+   * onto 'prefix' and is the recursion depth */
 
   // build a table of characters
   for (int c = 0; c < CHAR_TABLE_SIZE; c++)
@@ -234,7 +233,7 @@ int find_hash_dupes(char target[], char prefix[], int max)
 
 int main()
 {
-  
+  /* a bunch of what passes for tests */  
   install("hello", "world");
   install("hello", "party");
   undef("hello");
