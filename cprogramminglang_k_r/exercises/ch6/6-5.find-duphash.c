@@ -164,7 +164,7 @@ char *char2str(const char c)
 
 
 // test the test string against the target
-void testhashes(const char *s, const char *target)
+int testhashes(const char *s, const char *target)
 {
     unsigned hashs, hasht;
     hashs = hash(s);
@@ -174,29 +174,57 @@ void testhashes(const char *s, const char *target)
     else
       printf("attempt: %i doesn't match target: %i\n", hashs, hasht);
 
-    return NULL;
+    // return a match or array of structs of matches or something
+    // it needs to return an arbitrary number of matches though
+    // probably a linked list?
+    return 0;
 }
 
-/* I can use ascii values 32-126 for characters for now
- * this simplifies the construction of test strings, as 
- * I can modulo them the distance [0-94] inclusive and add 32.
- */
+/* construct strings in this ascii range */
+#define CHARTABLE_SIZE 95 /* highest character is 32+(95-1) */
+#define CHARTABLE_OFFSET 32 /* used ascii character offset */
+#define CHARTABLE_MAX 50 /* max test string size */
+static int chartable[CHARTABLE_SIZE]; /* point to this to reserve location when brute forcing strings */
+
 
 /* brute force a duplicate hash for a particular string */
 /* accepts an empty string or a prefix */
-/* build suffixes up over time by repeatedly appending */
 /* 'max' is the maximum number of letters to append onto 'prefix' */
 int findhashdup(char target[], char prefix[], int max) {
 
-  // test progressively longer substrings
-  for (int testsize = 1; testsize <= max; testsize++)
-  {
+  if (max > CHARTABLE_MAX)
+    max = CHARTABLE_MAX;
 
+  // build a table of characters to point into
+  for (int c = 0; c < CHARTABLE_SIZE; c++)
+    chartable[c] = c + CHARTABLE_OFFSET;
+
+  // an array of pointers into chartable[]
+  int *chartableptr[CHARTABLE_MAX] = { &chartable[0] };
+
+  // test progressively longer substrings
+  // each pointer can represent a location on the final
+  // string, and they can all be incremented and reset
+  for (int testsize = 0; testsize < max; testsize++)
+  {
+    for (int i = 0; i<CHARTABLE_SIZE; i++)
+    {
+      // convert the test char to a string
+      char *test_str = char2str(chartable[i]);
+      // build the test string
+      char *s = concat(prefix, test_str);
+      // test the test string against the target
+      testhashes(s, target);
+      free(s); // deallocate the string
+    }
+  }
+
+
+  /*
   for (char c='0'; c <= 'z'; c++) {
 
     // convert the test char to a string
     char *test_str = char2str(c);
-
     // build the test string
     char *s = concat(prefix, test_str);
 
@@ -205,6 +233,7 @@ int findhashdup(char target[], char prefix[], int max) {
 
     free(s); // deallocate the string
   }
+  */
 
   return 0;
 }
