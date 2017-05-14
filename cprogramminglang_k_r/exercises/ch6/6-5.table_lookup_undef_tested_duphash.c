@@ -127,6 +127,9 @@ struct nlist *undef(char *s)
         // this overwrites the actual pointer with the other pointer
         *np.next = *np.next->next;
         // don't I need to free() the struct that disappeared?
+        // from elsewhere: free((void *) np->defn); /* free previous defn */
+        free((void *) (*np.next).defn);
+        free((void *) (*np.next).name);
       }
       else {
         // don't I need to free() the struct that disappeared?
