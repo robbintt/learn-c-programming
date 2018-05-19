@@ -5,6 +5,8 @@
 
 /* minprintf: minimal printf with variable argument list */
 /* printf returns the character count and is declared as int */
+/* if you use an ellipsis, ..., then it means the NUMBER and TYPE of the arguments may vary. */
+/* stdarg.h contains ... */
 void minprintf(char *fmt, ...)
 {
   va_list ap; /* points to each unnamed arg in turn */
